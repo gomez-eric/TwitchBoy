@@ -75,8 +75,9 @@ body {
 }
 
 .listContainer { /* HOLDS STREAM USERS */
-  margin-left: 25%;
-  margin-right: 25%;
+  margin-left: 5%;
+  margin-right: 5%;
+  padding-bottom: 50px;
 }
 
 .media-object { /* PROFILE IMAGE */
@@ -179,6 +180,3 @@ body {
   transition: all 0.8s ease .05s;
 }
 
-.listContainer {
-  padding-bottom: 50px;
-}
