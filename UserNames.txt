@@ -1,0 +1,1 @@
+let daUserNames = ["ESL_SC2", "OgamingSC2", "lololololfakeusersorry", "DrDisRespectLIVE", "geekandsundry", "anotherfakeusersorry", "beyondthesummit", "esl_csgo", "fakeuserblahblah"];
