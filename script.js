@@ -1,27 +1,6 @@
-//let daUserNames = ["ESL_SC2", "OgamingSC2", "cretetion", "freecodecamp", "noobs2ninjas", "DrDisRespectLIVE", "LIRIK", "shroud", "geekandsundry"];
+let user_names_array = ["ESL_SC2", "OgamingSC2", "cretetion", "freecodecamp", "noobs2ninjas", "DrDisRespectLIVE", "LIRIK", "shroud", "geekandsundry"];
 
 $(document).ready(function(){
-
-  $(function() {
-    let maxSize = $(".jumbo").css("height").replace(/[^-\d\.]/g, '');
-
-    $(window).scroll(function() {
-      scroll = (maxSize - ($(window).scrollTop()));
-      $( ".theNAV" ).css('opacity', (scroll / maxSize));
-      if (scroll < 0) {
-        $( ".theNAV" ).hide();
-        //$( ".jumbo" ).css('opacity', 0);
-
-      } else if (scroll == maxSize) {
-        //$( ".jumbo" ).css('opacity', 1);
-      } else {
-          $( ".theNAV" ).show();
-      }
-
-    });
-
-  });
-
 
   $("body").addClass("animated fadeIn").one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function () {
         $(this).removeClass("animated fadeIn");
@@ -33,30 +12,25 @@ $(document).ready(function(){
     makingTheList();
   });
 
-  $("#on").popover({ trigger: "hover" });
-  $("#off").popover({ trigger: "hover" });
-  $("#filter").popover({ trigger: "hover" });
-  $("#refresh").popover({ trigger: "hover" });
-  $("#twitch").popover({ trigger: "hover" });
+  $("#on, #off, #filter, #refresh, #twitch, #github").popover({ trigger: "hover" });
 
-  $("#twitch").click(function() {
+  $("#twitch, #github").click(function() {
     window.open($(this).find("a").attr("href"), $(this).find("a").attr("target"));
   });
 
   $( "#on" ).click(function() {
-    $( ".offDaLine" ).hide();
-    $( ".onDaLine" ).show();
-
+    $( ".status_offline" ).hide();
+    $( ".status_online" ).show();
   });
 
   $( "#off" ).click(function() {
-    $( ".offDaLine" ).show();
-    $( ".onDaLine" ).hide();
+    $( ".status_offline" ).show();
+    $( ".status_online" ).hide();
   });
 
   $( "#filter" ).click(function() {
-    $( ".offDaLine" ).show();
-    $( ".onDaLine" ).show();
+    $( ".status_offline" ).show();
+    $( ".status_online" ).show();
   });
 
 });
@@ -64,39 +38,41 @@ $(document).ready(function(){
 function makingTheList(){
   $( ".listContainer" ).text("");
 
-  daUserNames.forEach(function(currentUser, index){
-    $( ".listContainer" ).append("<li class=\"media user" + index + "\">  </li>").append("<div class=\"loader loadingbby"  + index + " \"></div>");
-
+  user_names_array.forEach(function(currentUser, index){
     let online;
 
-    $.getJSON(createDaLinks("streams/", currentUser), function(json) {
+    $.getJSON(create_links("streams/", currentUser), function(json) {
 
-      if (json.stream == null) {
-        online = "off";
-      } else if (json.stream == undefined) {
-        online = "off";
+      if (json.status == 404) {
+        console.log("USER DOES NOT EXIST: \n\'" + currentUser+"\'");
       } else {
-        online = "on";
+        if (json.stream) online = true;
+        else online = false;
+
+        $( ".listContainer" ).append("<li class=\"media user" + index + "\">  </li>").append("<div class=\"loader loading_stat"  + index + " \"></div>");
+
       }
 
     })
 
     .done(function(){
 
-      $.getJSON(createDaLinks("channels/", currentUser), function(json) {
-        daCurrentStream = "";
-        if (online === "on") {
-          daCurrentStream = json.status;
-        } else if (online === "off") {
-          daCurrentStream = "Offline";
+      $.getJSON(create_links("channels/", currentUser), function(json) {
+        current_stream_stat = "";
+        if (online === true) {
+          current_stream_stat = json.status;
+        } else if (online === false) {
+          current_stream_stat = "Offline";
         }
 
-        daImageURL = json.logo;
-        daLink = json.url;
-        daUserName = json.display_name;
-        //createElements(index,online);
-        removeUnwanted (daUserName, index, online, json);
-        $( ".loadingbby"+index ).remove();
+        image_url = json.logo;
+        url_link = json.url;
+        user_name = json.display_name;
+
+        create_elements(index, online, json);
+
+        $( ".loading_stat" + index ).remove();
+
       });
 
     });
@@ -106,38 +82,28 @@ function makingTheList(){
 
 }
 
-function createDaLinks(requestType, daUserName) {
-    return reqUrl = "https://wind-bow.gomix.me/twitch-api/"+ requestType + daUserName +"?callback=?";
+function create_links(requestType, user_name) {
+    return reqUrl = "https://wind-bow.gomix.me/twitch-api/"+ requestType + user_name +"?callback=?";
 }
 
-function createElements(index, online, json) {
+function create_elements(index, online, json) {
 
-  $( ".user" + index ).append("<div class=\"media-left\"> <a target=\"_blank\" href=\" " + daLink + "\"> <img class=\"media-object\" src=\"" + daImageURL + "\"> </a> </div>");
-  $( ".user" + index ).append("<div class=\"media-body\"> <h3 class=\"media-heading\">" + "<a href=\"" + daLink + "\" target=\"_blank\" class=\"headingUsername\" >" + daUserName + " </a></h3><h5 class=\"\"> " + daCurrentStream + "</h5></div>");
+  $( ".user" + index ).append("<div class=\"media-left\"> <a target=\"_blank\" href=\" " + url_link + "\"> <img class=\"media-object\" src=\"" + image_url + "\"> </a> </div>");
+  $( ".user" + index ).append("<div class=\"media-body\"> <h3 class=\"media-heading\">" + "<a href=\"" + url_link + "\" target=\"_blank\" class=\"headingUsername\" >" + user_name + " </a></h3><h5 class=\"\"> " + current_stream_stat + "</h5></div>");
 
-  if (online == "on") {
+  if (online == true) {
     $(".user" + index ).addClass("animated bounceInLeft").one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function () {
       $(this).removeClass("animated bounceInLeft");
     });
-    $( ".user" + index ).addClass( "onDaLine" );
+    $( ".user" + index ).addClass( "status_online" );
     $( ".user" + index ).css( 'background-image', 'url(\"' + json.profile_banner + '\")');
     $(".user" + index).find(".media-body").addClass("textBG");
 
-  } else if (online == "off") {
+  } else if (online == false) {
     $(".user" + index ).addClass("animated bounceInRight").one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function () {
       $(this).removeClass("animated bounceInRight");
     });
-    $( ".user" + index ).addClass( "offDaLine" );
+    $( ".user" + index ).addClass( "status_offline" );
   }
 
 }
-
-
-function removeUnwanted (users, index, online, json) {
-    if (users == undefined) {
-      $( ".user" + index).remove();
-    } else {
-      createElements(index,online, json);
-    }
-
-  }
