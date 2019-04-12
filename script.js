@@ -92,16 +92,16 @@ function create_elements(index, online, json) {
   $( ".user" + index ).append("<div class=\"media-body\"> <h3 class=\"media-heading\">" + "<a href=\"" + url_link + "\" target=\"_blank\" class=\"headingUsername\" >" + user_name + " </a></h3><h5 class=\"\"> " + current_stream_stat + "</h5></div>");
 
   if (online == true) {
-    $(".user" + index ).addClass("animated bounceInLeft").one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function () {
-      $(this).removeClass("animated bounceInLeft");
+    $(".user" + index ).addClass("animated pulse").one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function () {
+      $(this).removeClass("animated pulse");
     });
     $( ".user" + index ).addClass( "status_online" );
     $( ".user" + index ).css( 'background-image', 'url(\"' + json.profile_banner + '\")');
     $(".user" + index).find(".media-body").addClass("textBG");
 
   } else if (online == false) {
-    $(".user" + index ).addClass("animated bounceInRight").one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function () {
-      $(this).removeClass("animated bounceInRight");
+    $(".user" + index ).addClass("animated pulse").one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function () {
+      $(this).removeClass("animated pulse");
     });
     $( ".user" + index ).addClass( "status_offline" );
   }
